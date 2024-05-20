@@ -1,0 +1,23 @@
+main {
+    margin-top: 20px;
+}
+
+ul {
+    list-style-type: none;
+    margin-left: -20px;
+}
+
+.task {
+    display: inline-block;
+    width: 80%;
+}
+
+.delete-icon {
+    margin-left: 50px;
+    visibility: hidden;
+    cursor:pointer;
+}
+
+.task-item:hover .delete-icon {
+    visibility: visible;
+}

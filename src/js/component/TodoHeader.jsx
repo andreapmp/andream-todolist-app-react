@@ -4,20 +4,44 @@ import React, { useState } from "react";
 import '../../styles/TodoHeader.css'
 
 
-const TodoHeader = ({todos, setTodos, newTask, setNewTask, counter, setCounter}) => {
-    
-    const addTask = () => {
-		console.log("Creating new task: ", newTask);
-		
-		let newTodoObject = {
-			id: counter,
-			title: newTask,
-			done: false
-		}
-		
-		setTodos([...todos, newTodoObject])
-		setCounter(counter + 1);
+const TodoHeader = ({todos, setTodos}) => {
+
+    const [newTask, setNewTask] = useState("")
+
+    const postNewTask = async (todoObject) => {
+		const options = {
+            method: 'POST',
+            body: JSON.stringify(todoObject),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        const response = await fetch('https://playground.4geeks.com/todo/todos/andream', options)
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            console.log('Error: ', response.status, response.statusText);
+            return {
+                error: {
+                    status: response.status,
+                    statusText: response.statusText
+                }
+            }
+        }
 	}
+
+    const addTask = () => {
+        let newTodoObject = {
+            label: newTask,
+            is_done: false
+        };
+        const newTodos = [...todos, newTodoObject];
+        setTodos(newTodos);
+        
+        postNewTask(newTodoObject);
+    }
 
     //text validation
     const checkTextBox = () => {
@@ -26,6 +50,7 @@ const TodoHeader = ({todos, setTodos, newTask, setNewTask, counter, setCounter})
             alert ("Please add a task.")
         } else {
             addTask();
+            setNewTask("");
         }
     }
 
@@ -42,7 +67,9 @@ const TodoHeader = ({todos, setTodos, newTask, setNewTask, counter, setCounter})
                 />
                 <button
                     onClick={checkTextBox}
-                >Add Task</button>
+                >
+                    Add Task
+                </button>
             </header>
 		</>
 	);
